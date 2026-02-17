@@ -1,6 +1,6 @@
 ---
 - name: Install JDK on Java Node
-  hosts: java_nodes
+  hosts: app
   become: true
   tasks:
     - name: Install JDK
@@ -9,7 +9,7 @@
         state: present
 
 - name: Install Nginx on Web Node
-  hosts: web      
+  hosts: web
   become: true
   tasks:
     - name: Install Nginx
