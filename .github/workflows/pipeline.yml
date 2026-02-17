@@ -21,7 +21,7 @@ jobs:
       - name: Set up SSH key
         run: |
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > /tmp/ansible_key.pem
-          chmod 600 /tmp/ansible_key.pem
+          chmod 400 /tmp/ansible_key.pem
 
       - name: Verify inventory and playbook
         run: |
