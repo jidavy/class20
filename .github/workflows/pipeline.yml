@@ -1,26 +1,37 @@
 name: Ansible Deploy
 
-on: 
-  workflow_dispatch: {}
+on:
+  workflow_dispatch:
   push:
-   branches: ["main"]
+    branches: ["main"]
 
 jobs:
   run-ansible:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: listout
-        run: |
-          pwd
-          ls -ltr
-          ansible --version
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > /tmp/key.pem
-          chmod 400 /tmp/key.pem
 
-      - name: Run Playbook
+      - name: Install Ansible
         run: |
-          ansible-playbook -i inventories/dev.ini playbook.yml
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > /tmp/ansible_key.pem
+          chmod 600 /tmp/ansible_key.pem
+
+      - name: Verify inventory and playbook
+        run: |
+          echo "Inventory content:"
+          cat inventories/dev.ini
+          echo "Playbook content:"
+          cat playbook.yml
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i inventories/dev.ini playbook.yml \
+            --private-key /tmp/ansible_key.pem \
+            -u ec2-user   # or the correct SSH user for your AMI
