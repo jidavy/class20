@@ -1,44 +1,22 @@
 ---
-- name: Nginx Install
-  hosts: web
+- name: Install JDK on Java Node
+  hosts: java_nodes
   become: true
-  gather_facts: true
-
   tasks:
-    - name: EC2 Nginx install
-      yum:
-        name: nginx
-        state: present 
-
-    - name: Ensure Nginx is running
-      service:
-        name: nginx
-        state: started 
-
-
-        
-this is a playbook.yml:
----
-- name: Nginx Install
-  hosts: web
-  become: true
-  gather_facts: true
-  tasks:
-    - name: EC2 Nginx install
-      yum:
-        name: nginx
-        state: present 
-    - name: Ensure Nginx is running
-      service:
-        name: nginx
-        state: started 
-
-
-    - name: EC2 JDK install
+    - name: Install JDK
       yum:
         name: java-11-openjdk
         state: present
-    - name: Ensure JDK is installed
-      command: java -version
-      register: java_version
-      changed_when: false
+
+- name: Install Nginx on Web Node
+  hosts: web      
+  become: true
+  tasks:
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
